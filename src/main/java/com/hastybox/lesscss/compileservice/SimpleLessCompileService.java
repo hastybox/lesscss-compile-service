@@ -17,6 +17,8 @@ package com.hastybox.lesscss.compileservice;
 import java.io.File;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hastybox.lesscss.compileservice.compiler.LessCompiler;
 import com.hastybox.lesscss.compileservice.compiler.LessCssLessCompilerWrapper;
@@ -28,6 +30,15 @@ import com.hastybox.lesscss.compileservice.compiler.LessCssLessCompilerWrapper;
  * 
  */
 public class SimpleLessCompileService implements LessCompileService {
+	
+	/**
+	 * logger
+	 */
+	private static final Logger LOGGER;
+	
+	static {
+		LOGGER = LoggerFactory.getLogger(SimpleLessCompileService.class);
+	}
 
 	/**
 	 * the compiler
@@ -66,6 +77,7 @@ public class SimpleLessCompileService implements LessCompileService {
 	 * .lang.String)
 	 */
 	public String compileCode(String lessCode) {
+		LOGGER.debug("Comiling LESS code.");
 		return lessCompiler.compile(lessCode);
 	}
 
@@ -73,7 +85,7 @@ public class SimpleLessCompileService implements LessCompileService {
 	 * @see com.hastybox.lesscss.compileservice.LessCompileService#compileCode(java.io.File)
 	 */
 	public String compileCode(File lessFile) {
-		
+		LOGGER.debug("Compiling LESS file {}", lessFile.getName());
 		return lessCompiler.compile(lessFile);
 	}
 	@Override

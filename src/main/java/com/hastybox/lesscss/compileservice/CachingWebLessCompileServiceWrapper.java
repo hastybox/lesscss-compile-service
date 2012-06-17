@@ -21,6 +21,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.servlet.ServletContext;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Simple Caching wrapper based on ConcurrentHashMap
@@ -30,6 +32,15 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  */
 public class CachingWebLessCompileServiceWrapper implements
 		WebLessCompileService {
+	
+	/**
+	 * logger
+	 */
+	private static final Logger LOGGER;
+	
+	static {
+		LOGGER = LoggerFactory.getLogger(CachingWebLessCompileServiceWrapper.class);
+	}
 
 	/**
 	 * wrapped compile service;
@@ -78,10 +89,13 @@ public class CachingWebLessCompileServiceWrapper implements
 	public String compileFromPath(String path, ServletContext context) {
 
 		String cacheKey = "path:" + path;
+		LOGGER.debug("Looking up {} in cache.", path);
 
 		String cssCode = cache.get(cacheKey);
 
 		if (cssCode == null) {
+			LOGGER.debug("Did not find {} in cache. Going to compile.", path);
+			
 			cssCode = compileService.compileFromPath(path, context);
 
 			cache.put(cacheKey, cssCode);
@@ -99,10 +113,13 @@ public class CachingWebLessCompileServiceWrapper implements
 	 */
 	public String compileCode(File lessFile) {
 		String cacheKey = "file:" + lessFile.getPath();
+		LOGGER.debug("Looking up {} in cache.", lessFile);
 
 		String cssCode = cache.get(cacheKey);
 
 		if (cssCode == null) {
+			LOGGER.debug("Did not find {} in cache. Going to compile.", lessFile);
+			
 			cssCode = compileService.compileCode(lessFile);
 
 			cache.put(cacheKey, cssCode);
@@ -120,10 +137,13 @@ public class CachingWebLessCompileServiceWrapper implements
 	 */
 	public String compileCode(String lessCode) {
 		String cacheKey = "code:" + lessCode;
+		LOGGER.debug("Looking up {} in cache.", lessCode);
 
 		String cssCode = cache.get(cacheKey);
 
 		if (cssCode == null) {
+			LOGGER.debug("Did not find {} in cache. Going to compile.", lessCode);
+			
 			cssCode = compileService.compileCode(lessCode);
 
 			cache.put(cacheKey, cssCode);
@@ -136,6 +156,8 @@ public class CachingWebLessCompileServiceWrapper implements
 	 * clears all entries from cache.
 	 */
 	public void invalidateCache() {
+		LOGGER.debug("Invalidating complete cache.");
+		
 		cache.clear();
 	}
 
@@ -146,6 +168,7 @@ public class CachingWebLessCompileServiceWrapper implements
 	 *            key to remove from cache
 	 */
 	public void invalidateCache(String path) {
+		LOGGER.debug("Invalidating {} key from cache", path);
 		cache.remove(path);
 	}
 

@@ -20,6 +20,8 @@ import java.io.IOException;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.lesscss.LessException;
 import org.lesscss.LessCompiler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hastybox.lesscss.compileservice.exception.CompileException;
 
@@ -31,6 +33,15 @@ import com.hastybox.lesscss.compileservice.exception.CompileException;
  */
 public class LessCssLessCompilerWrapper implements
 		com.hastybox.lesscss.compileservice.compiler.LessCompiler {
+	
+	/**
+	 * logger
+	 */
+	private static final Logger LOGGER;
+	
+	static {
+		LOGGER = LoggerFactory.getLogger(LessCssLessCompilerWrapper.class);
+	}
 
 	/**
 	 * use compression on CSS code
@@ -90,6 +101,8 @@ public class LessCssLessCompilerWrapper implements
 		LessCompiler compiler = createCompiler();
 
 		try {
+			LOGGER.debug("Compiling {}", lessCode);
+			
 			return compiler.compile(lessCode);
 		} catch (LessException e) {
 			throw new CompileException("Could not compile given code", e);
@@ -107,6 +120,8 @@ public class LessCssLessCompilerWrapper implements
 		LessCompiler compiler = createCompiler();
 
 		try {
+			LOGGER.debug("Compiling LESS code from file {}", lessFile);
+			
 			return compiler.compile(lessFile);
 		} catch (IOException e) {
 			throw new CompileException("Could not load code File", e);

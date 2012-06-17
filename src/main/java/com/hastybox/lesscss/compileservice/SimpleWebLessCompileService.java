@@ -19,6 +19,8 @@ import java.io.File;
 import javax.servlet.ServletContext;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hastybox.lesscss.compileservice.exception.CompileException;
 
@@ -30,6 +32,15 @@ import com.hastybox.lesscss.compileservice.exception.CompileException;
  */
 public class SimpleWebLessCompileService extends SimpleLessCompileService
 		implements WebLessCompileService {
+
+	/**
+	 * logger
+	 */
+	private static final Logger LOGGER;
+
+	static {
+		LOGGER = LoggerFactory.getLogger(SimpleWebLessCompileService.class);
+	}
 
 	/**
 	 * base path to less files
@@ -68,16 +79,18 @@ public class SimpleWebLessCompileService extends SimpleLessCompileService
 	 * (java.lang.String, javax.servlet.ServletContext)
 	 */
 	public String compileFromPath(String path, ServletContext context) {
+		LOGGER.debug("Compiling LESS file at {}", path);
 
 		String lessPath = basePath + path;
 
 		String completePath = context.getRealPath(lessPath);
 
 		if (completePath == null) {
-			throw new CompileException(
-					String.format(
-							"LESS file not found. Your application might not be exploded to filesystem",
-							lessPath));
+			String errorMsg = String
+					.format("LESS file not found. Your application might not be exploded to filesystem",
+							lessPath);
+			LOGGER.error(errorMsg);
+			throw new CompileException(errorMsg);
 		}
 
 		File lessFile = new File(completePath);
