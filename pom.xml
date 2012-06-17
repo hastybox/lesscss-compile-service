@@ -12,7 +12,13 @@
 		Helper Service to compile LESS code and files to CSS. 
 		Contains a backend implementation for controllers to create CSS code on the fly from LESS files in servlet context.
 	</description>
-	<url>http://maven.apache.org</url>
+	<url>https://github.com/hastybox/lesscss-compile-service</url>
+	
+	<scm>
+		<connection>scm:git:https://github.com/hastybox/lesscss-compile-service.git</connection>
+		<developerConnection>scm:git:https://github.com/hastybox/lesscss-compile-service.git</developerConnection>
+		<url>https://github.com/hastybox/lesscss-compile-service</url>
+	</scm>
 
 	<licenses>
 		<license>
@@ -58,6 +64,13 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>1.6.6</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-nop</artifactId>
+			<version>1.6.6</version>
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>
