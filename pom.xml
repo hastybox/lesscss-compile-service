@@ -13,7 +13,7 @@
 		Contains a backend implementation for controllers to create CSS code on the fly from LESS files in servlet context.
 	</description>
 	<url>https://github.com/hastybox/lesscss-compile-service</url>
-	
+
 	<scm>
 		<connection>scm:git:https://github.com/hastybox/lesscss-compile-service.git</connection>
 		<developerConnection>scm:git:https://github.com/hastybox/lesscss-compile-service.git</developerConnection>
@@ -51,6 +51,13 @@
 			<groupId>javax.servlet</groupId>
 			<artifactId>jsp-api</artifactId>
 			<version>2.0</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>3.0.0.RELEASE</version>
 			<scope>provided</scope>
 		</dependency>
 

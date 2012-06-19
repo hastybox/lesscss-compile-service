@@ -14,13 +14,10 @@
  */
 package com.hastybox.lesscss.compileservice;
 
-import java.io.File;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.ServletContext;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,27 +27,18 @@ import org.slf4j.LoggerFactory;
  * @author psy
  * 
  */
-public class CachingWebLessCompileServiceWrapper implements
-		WebLessCompileService {
-	
+public class CachingWebLessCompileServiceWrapper extends
+		CachingLessCompileServiceWrapper implements WebLessCompileService {
+
 	/**
 	 * logger
 	 */
-	private static final Logger LOGGER;
-	
+	static final Logger LOGGER;
+
 	static {
-		LOGGER = LoggerFactory.getLogger(CachingWebLessCompileServiceWrapper.class);
+		LOGGER = LoggerFactory
+				.getLogger(CachingWebLessCompileServiceWrapper.class);
 	}
-
-	/**
-	 * wrapped compile service;
-	 */
-	private WebLessCompileService compileService;
-
-	/**
-	 * simple cache
-	 */
-	private Map<String, String> cache;
 
 	/**
 	 * constructor initializing default values
@@ -78,7 +66,7 @@ public class CachingWebLessCompileServiceWrapper implements
 	public void setCompileService(WebLessCompileService compileService) {
 		this.compileService = compileService;
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -95,88 +83,14 @@ public class CachingWebLessCompileServiceWrapper implements
 
 		if (cssCode == null) {
 			LOGGER.debug("Did not find {} in cache. Going to compile.", path);
-			
-			cssCode = compileService.compileFromPath(path, context);
+
+			cssCode = ((WebLessCompileService) getCompileService())
+					.compileFromPath(path, context);
 
 			cache.put(cacheKey, cssCode);
 		}
 
 		return cssCode;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.hastybox.lesscss.compileservice.LessCompileService#compileCode(java
-	 * .io.File)
-	 */
-	public String compileCode(File lessFile) {
-		String cacheKey = "file:" + lessFile.getPath();
-		LOGGER.debug("Looking up {} in cache.", lessFile);
-
-		String cssCode = cache.get(cacheKey);
-
-		if (cssCode == null) {
-			LOGGER.debug("Did not find {} in cache. Going to compile.", lessFile);
-			
-			cssCode = compileService.compileCode(lessFile);
-
-			cache.put(cacheKey, cssCode);
-		}
-
-		return cssCode;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.hastybox.lesscss.compileservice.LessCompileService#compileCode(java
-	 * .lang.String)
-	 */
-	public String compileCode(String lessCode) {
-		String cacheKey = "code:" + lessCode;
-		LOGGER.debug("Looking up {} in cache.", lessCode);
-
-		String cssCode = cache.get(cacheKey);
-
-		if (cssCode == null) {
-			LOGGER.debug("Did not find {} in cache. Going to compile.", lessCode);
-			
-			cssCode = compileService.compileCode(lessCode);
-
-			cache.put(cacheKey, cssCode);
-		}
-
-		return cssCode;
-	}
-
-	/**
-	 * clears all entries from cache.
-	 */
-	public void invalidateCache() {
-		LOGGER.debug("Invalidating complete cache.");
-		
-		cache.clear();
-	}
-
-	/**
-	 * removes entry for {@code path} from cache
-	 * 
-	 * @param path
-	 *            key to remove from cache
-	 */
-	public void invalidateCache(String path) {
-		LOGGER.debug("Invalidating {} key from cache", path);
-		cache.remove(path);
-	}
-
-	@Override
-	public String toString() {
-		return new ToStringBuilder(this)
-				.append("compileService", compileService)
-				.append("cache", cache).toString();
 	}
 
 }
