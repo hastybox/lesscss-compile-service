@@ -60,14 +60,18 @@ abstract public class AbstractSpringLessController implements Controller, LastMo
 	}
 	
 	protected void compileLess(String resourcePath, HttpServletResponse response) throws IOException {
+		String cssCode = compileLess(resourcePath);
+		
+		// write to response
+		response.getWriter().write(cssCode);
+	}
+	
+	protected String compileLess(String resourcePath) throws IOException {
 		// load LESS file
 		File lessFile = resourceLoader.getResource(basePath + resourcePath).getFile();
 		
 		// compile
-		String cssCode = compileService.compileCode(lessFile);
-		
-		// write to response
-		response.getWriter().write(cssCode);
+		return compileService.compileCode(lessFile);
 	}
 
 }
