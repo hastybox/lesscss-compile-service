@@ -23,7 +23,7 @@ abstract public class AbstractSpringLessController implements Controller,
 	 * logger
 	 */
 	private static final Logger LOGGER;
-	
+
 	static {
 		LOGGER = LoggerFactory.getLogger(AbstractSpringLessController.class);
 	}
@@ -32,14 +32,21 @@ abstract public class AbstractSpringLessController implements Controller,
 	 * resource loader to load LESS files
 	 */
 	protected ResourceLoader resourceLoader;
+
 	/**
 	 * compile service to do the compilation
 	 */
 	protected LessCompileService compileService;
+
 	/**
 	 * base path of all LESS files
 	 */
 	protected String basePath;
+
+	/**
+	 * relative value (from now) to set to LastModified header.
+	 */
+	private Long relativeLastModified;
 
 	public void setResourceLoader(ResourceLoader resourceLoader) {
 		this.resourceLoader = resourceLoader;
@@ -55,6 +62,20 @@ abstract public class AbstractSpringLessController implements Controller,
 	}
 
 	/**
+	 * Relative value (from now) to set to LastModified Header. {@code null}
+	 * will always return Jan. 1st, 1970 in header. A positive value will set
+	 * the LastModied to be {@code relativeLastModified} milliseconds in the
+	 * past. A negative value will always trigger a generation of the content.
+	 * 
+	 * 
+	 * @param relativeLastModified
+	 *            the relativeLastModified to set
+	 */
+	public void setRelativeLastModified(Long relativeLastModified) {
+		this.relativeLastModified = relativeLastModified;
+	}
+
+	/**
 	 * Base path to all LESS files. Be aware that a
 	 * {@link org.springframework.core.io.ResourceLoader} is used to access LESS
 	 * files (e.g. "WEB-INF/less/", beware closing "/").
@@ -67,8 +88,15 @@ abstract public class AbstractSpringLessController implements Controller,
 	}
 
 	public long getLastModified(HttpServletRequest request) {
-		// TODO Auto-generated method stub
-		return 0;
+		if (relativeLastModified == null) {
+			return 0;
+		}
+		
+		if (relativeLastModified < 0L) {
+			return -1;
+		}
+		
+		return System.currentTimeMillis() - relativeLastModified;
 	}
 
 	/**
@@ -86,7 +114,7 @@ abstract public class AbstractSpringLessController implements Controller,
 	protected void compileLess(String resourcePath, HttpServletResponse response)
 			throws IOException {
 		LOGGER.debug("Compiling LESS from {}", resourcePath);
-		
+
 		String cssCode;
 
 		try {
@@ -95,8 +123,9 @@ abstract public class AbstractSpringLessController implements Controller,
 
 		} catch (FileNotFoundException e) {
 			// file not found. Set ressponse to 404
-			LOGGER.info("LESS file at {} not found. Returning 404.", resourcePath);
-			
+			LOGGER.info("LESS file at {} not found. Returning 404.",
+					resourcePath);
+
 			response.sendError(404);
 			return;
 		}
@@ -120,7 +149,7 @@ abstract public class AbstractSpringLessController implements Controller,
 		Resource resource = resourceLoader.getResource(basePath + resourcePath);
 
 		if (!resource.exists()) {
-			throw new FileNotFoundException("Resouce at " + resourcePath
+			throw new FileNotFoundException("Resource at " + resourcePath
 					+ " does not exist");
 		}
 
