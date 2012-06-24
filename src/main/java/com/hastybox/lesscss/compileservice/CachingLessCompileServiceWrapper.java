@@ -48,6 +48,13 @@ public class CachingLessCompileServiceWrapper implements LessCompileService {
 	}
 
 	/**
+	 * @param compileService the compileService to set
+	 */
+	public void setCompileService(LessCompileService compileService) {
+		this.compileService = compileService;
+	}
+
+	/**
 	 * constructor
 	 * 
 	 * @param compileService

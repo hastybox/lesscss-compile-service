@@ -39,6 +39,8 @@ public class CachingWebLessCompileServiceWrapper extends
 		LOGGER = LoggerFactory
 				.getLogger(CachingWebLessCompileServiceWrapper.class);
 	}
+	
+	private static String PATH_PREFIX = "path:";
 
 	/**
 	 * constructor initializing default values
@@ -76,7 +78,7 @@ public class CachingWebLessCompileServiceWrapper extends
 	 */
 	public String compileFromPath(String path, ServletContext context) {
 
-		String cacheKey = "path:" + path;
+		String cacheKey = PATH_PREFIX + path;
 		LOGGER.debug("Looking up {} in cache.", path);
 
 		String cssCode = cache.get(cacheKey);
@@ -91,6 +93,17 @@ public class CachingWebLessCompileServiceWrapper extends
 		}
 
 		return cssCode;
+	}
+	
+	/**
+	 * removes entry for {@code path} from cache
+	 * 
+	 * @param path
+	 *            key to remove from cache
+	 */
+	public void invalidatePathCache(String path) {
+		LOGGER.debug("Invalidating {} key from cache", path);
+		cache.remove(PATH_PREFIX + path);
 	}
 
 }

@@ -17,6 +17,11 @@ import org.springframework.web.servlet.mvc.LastModified;
 
 import com.hastybox.lesscss.compileservice.LessCompileService;
 
+/**
+ * Abstract class containing common functions to SpringLessControllers
+ * @author psy
+ *
+ */
 abstract public class AbstractSpringLessController implements Controller,
 		LastModified, ResourceLoaderAware {
 	/**
@@ -117,6 +122,7 @@ abstract public class AbstractSpringLessController implements Controller,
 
 		String cssCode;
 
+		// TODO add caching here to prevent file system lookup
 		try {
 			// try to compile file
 			cssCode = compileLess(resourcePath);
