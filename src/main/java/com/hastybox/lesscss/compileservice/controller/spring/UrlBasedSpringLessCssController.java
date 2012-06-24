@@ -14,16 +14,15 @@
  */
 package com.hastybox.lesscss.compileservice.controller.spring;
 
-import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.ModelAndView;
-
-import com.hastybox.lesscss.compileservice.exception.CompileException;
 
 /**
  * Spring based Controller, that compiles LESS code to CSS on-the-fly
@@ -31,13 +30,24 @@ import com.hastybox.lesscss.compileservice.exception.CompileException;
  * @author psy
  * 
  */
-public class UrlBasedSpringLessCssController extends AbstractSpringLessController  {
+public class UrlBasedSpringLessCssController extends
+		AbstractSpringLessController {
+
+	/**
+	 * logger
+	 */
+	private static final Logger LOGGER;
+
+	static {
+		LOGGER = LoggerFactory.getLogger(UrlBasedSpringLessCssController.class);
+	}
 
 	/**
 	 * base path to CSS files in request
 	 */
+	@SuppressWarnings("unused")
 	private String requestPath;
-	
+
 	/**
 	 * pattern to retrieve path to LESS file
 	 */
@@ -45,15 +55,17 @@ public class UrlBasedSpringLessCssController extends AbstractSpringLessControlle
 
 	/**
 	 * Base path to all CSS files in the request. If all CSS files are in
-	 * http://my.domain.com/staticContent/css/*.css {@code requestPath} should be set to
-	 * {@code"/staticContent/css/"}.
+	 * http://my.domain.com/staticContent/css/*.css {@code requestPath} should
+	 * be set to {@code"/staticContent/css/"}. Regex is used to match request
+	 * paths. However do not use groups as this implementation tries to fetch
+	 * group 1 to find the path to the LESS file to compile.
 	 * 
 	 * @param requestPath
 	 *            the requestPath
 	 */
 	public void setRequestPath(String requestPath) {
 		this.requestPath = requestPath;
-		
+
 		// compile regex pattern
 		this.pathPattern = Pattern.compile("^.+" + requestPath + "(.+)\\.css");
 	}
@@ -67,18 +79,26 @@ public class UrlBasedSpringLessCssController extends AbstractSpringLessControlle
 	 */
 	public ModelAndView handleRequest(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		
-		Matcher matcher = pathPattern.matcher(request.getRequestURI());
-		
+
+		String requestUri = request.getRequestURI();
+
+		LOGGER.debug("Handling request to {}", requestUri);
+
+		Matcher matcher = pathPattern.matcher(requestUri);
+
 		if (!matcher.find()) {
-			throw new CompileException("Could not find path to LESS file in URL");
+			// no match found, return 404
+			LOGGER.info("Request URI {} not mathing pattern, returning 404");
+
+			response.sendError(404);
+			return null;
 		}
-		
+
 		String resourcePath = matcher.group(1) + ".less";
-		
+
 		// compile the LESS code
 		compileLess(resourcePath, response);
-		
+
 		return null;
 	}
 }
