@@ -30,7 +30,7 @@ import org.springframework.web.servlet.ModelAndView;
  * @author psy
  * 
  */
-public class UrlBasedSpringLessCssController extends
+public class UrlBasedSpringLessController extends
 		AbstractSpringLessController {
 
 	/**
@@ -39,7 +39,7 @@ public class UrlBasedSpringLessCssController extends
 	private static final Logger LOGGER;
 
 	static {
-		LOGGER = LoggerFactory.getLogger(UrlBasedSpringLessCssController.class);
+		LOGGER = LoggerFactory.getLogger(UrlBasedSpringLessController.class);
 	}
 
 	/**

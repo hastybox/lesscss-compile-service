@@ -34,9 +34,9 @@ import com.hastybox.lesscss.compileservice.LessCompileService;
  * @author psy
  *
  */
-public class UrlBasedSpringLessCssControllerTest {
+public class UrlBasedSpringLessControllerTest {
 	
-	private UrlBasedSpringLessCssController controller;
+	private UrlBasedSpringLessController controller;
 	
 	private LessCompileService compileService;
 	
@@ -54,7 +54,7 @@ public class UrlBasedSpringLessCssControllerTest {
 	@Before
 	public void setUp() throws Exception {
 		
-		controller = new UrlBasedSpringLessCssController();
+		controller = new UrlBasedSpringLessController();
 		
 		compileService = mock(LessCompileService.class);
 		
@@ -70,7 +70,7 @@ public class UrlBasedSpringLessCssControllerTest {
 	}
 
 	/**
-	 * Test method for {@link com.hastybox.lesscss.compileservice.controller.spring.UrlBasedSpringLessCssController#handleRequest(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)}.
+	 * Test method for {@link com.hastybox.lesscss.compileservice.controller.spring.UrlBasedSpringLessController#handleRequest(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)}.
 	 */
 	@Test
 	public void testHandleRequest() throws Exception {
@@ -95,7 +95,7 @@ public class UrlBasedSpringLessCssControllerTest {
 	}
 	
 	/**
-	 * Test method for {@link com.hastybox.lesscss.compileservice.controller.spring.UrlBasedSpringLessCssController#handleRequest(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)}.
+	 * Test method for {@link com.hastybox.lesscss.compileservice.controller.spring.UrlBasedSpringLessController#handleRequest(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)}.
 	 */
 	@Test
 	public void testHandleRequestPathNotMatching() throws Exception {
@@ -116,7 +116,7 @@ public class UrlBasedSpringLessCssControllerTest {
 	}
 	
 	/**
-	 * Test method for {@link com.hastybox.lesscss.compileservice.controller.spring.UrlBasedSpringLessCssController#handleRequest(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)}.
+	 * Test method for {@link com.hastybox.lesscss.compileservice.controller.spring.UrlBasedSpringLessController#handleRequest(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)}.
 	 */
 	@Test
 	public void testHandleRequestFileNotFound() throws Exception {
