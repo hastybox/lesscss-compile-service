@@ -68,3 +68,40 @@ to publish compiled LESS files:
 			response.getWriter().write(cssCode);
 		}
 	}
+
+Spring Controller
+---------------
+As of version 0.2.0 two Spring Controllers are available to handle requests for CSS files and compile the corresponding LESS files.
+The UrlBasedSpringLessController is a simple implementation that directly maps a requested CSS file in a configured request path to a LESS file in a pre-configured path within the webapp root. If the file file was not found in the intended path a 404 error is returned. This controller is usefull if you have lots of CSS files that you do not want to configure manually.
+
+	<bean id="lessController" class="com.hastybox.lesscss.compileservice.controller.spring.UrlBasedSpringLessController">
+		<property name="basePath" value="WEB-INF/less/" />
+		<property name="requestPath" value="/css/" />
+		<property name="compileService" ref="lessCompileService" />
+	</bean>
+
+The MappedSpringLessController uses a prefedined mapping to map one or more CSS files to a specific LESS file. Regex are used to identify paths to virtual CSS files. If no match was found to the CSS path a 404 error is returned. This controller is usefull if you have a small, defined set of CSS and LESS files.
+
+	<bean id="lessController" class="com.hastybox.lesscss.compileservice.controller.spring.MappedSpringLessController">
+		<property name="basePath" value="WEB-INF/less/" />
+		<property name="compileService" ref="lessCompileService" />
+		<property name="mapping">
+			<map>
+				<entry key="verysimple\.css" value="simple.less" />
+				<entry key="bootstrap/.+css" value="bootstrap/bootstrap.less" />
+			</map>
+		</property>
+	</bean>
+
+The following is an example of how to configure Spring MVC to URL handling on the LESS controllers
+
+	<bean id="lessUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="mappings">
+			<props>
+				<prop key="/css/*.css">lessController</prop>
+				<prop key="/css/**/*.css">lessController</prop>
+			</props>
+		</property>
+	</bean>
+
+The controllers can be configured to set the Last-Modified Header to use browser caching. By default the header is set to Jan 1st, 1970.
