@@ -25,7 +25,6 @@ import org.junit.Test;
 import org.lesscss.LessCompiler;
 import org.lesscss.LessException;
 
-import com.hastybox.lesscss.compileservice.compiler.LessCssLessCompilerWrapper.LessCompilerCreator;
 import com.hastybox.lesscss.compileservice.exception.CompileException;
 
 /**
@@ -39,8 +38,6 @@ public class LessCssLessCompilerWrapperTest {
 	 */
 	private LessCssLessCompilerWrapper compilerWrapper;
 
-	private LessCompilerCreator compilerCreator;
-
 	private LessCompiler compiler;
 
 	/**
@@ -51,12 +48,8 @@ public class LessCssLessCompilerWrapperTest {
 
 		compilerWrapper = new LessCssLessCompilerWrapper();
 
-		compilerCreator = mock(LessCompilerCreator.class);
 		compiler = mock(LessCompiler.class);
-
-		compilerWrapper.setLessCompilerCreator(compilerCreator);
-		when(compilerCreator.createCompiler(anyBoolean(), (String) anyObject()))
-				.thenReturn(compiler);
+		compilerWrapper.setCompiler(compiler);
 	}
 
 	/**

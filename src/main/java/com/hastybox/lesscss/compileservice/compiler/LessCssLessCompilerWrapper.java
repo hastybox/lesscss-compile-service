@@ -54,9 +54,9 @@ public class LessCssLessCompilerWrapper implements
 	private String encoding;
 
 	/**
-	 * helper to create LessCompiler instances
+	 * the actual Less Compiler
 	 */
-	private LessCompilerCreator lessCompilerCreator;
+	private LessCompiler compiler;
 
 	/**
 	 * @param compress
@@ -75,17 +75,17 @@ public class LessCssLessCompilerWrapper implements
 	}
 	
 	/**
-	 * @param lessCompilerCreator the lessCompilerCreator to set
+	 * @param compiler the compiler to set
 	 */
-	void setLessCompilerCreator(LessCompilerCreator lessCompilerCreator) {
-		this.lessCompilerCreator = lessCompilerCreator;
+	public void setCompiler(LessCompiler compiler) {
+		this.compiler = compiler;
 	}
 
 	/**
 	 * constructor setting default values
 	 */
 	public LessCssLessCompilerWrapper() {
-		lessCompilerCreator = new LessCompilerCreator();
+		compiler = null;
 		encoding = null;
 		compress = false;
 	}
@@ -131,12 +131,22 @@ public class LessCssLessCompilerWrapper implements
 	}
 
 	/**
-	 * builds a new LessCompiler from given configuration.
+	 * builds a new LessCompiler from given configuration if there is not already one defined.
 	 * 
 	 * @return a new LessCompiler instance
 	 */
-	private LessCompiler createCompiler() {
-		return lessCompilerCreator.createCompiler(compress, encoding);
+	private synchronized LessCompiler createCompiler() {
+		// in case there is already a compiler
+		if (compiler == null) {
+			compiler = new LessCompiler();
+			compiler.setCompress(compress);
+			
+			if (encoding != null) {
+				compiler.setEncoding(encoding);
+			}
+		}
+		
+		return compiler;
 
 	}
 
@@ -144,33 +154,6 @@ public class LessCssLessCompilerWrapper implements
 	public String toString() {
 		return new ToStringBuilder(this).append("compress", compress)
 				.append("encoding", encoding).toString();
-	}
-
-	/**
-	 * Helper class to create a LessCompiler instance
-	 * 
-	 * @author psy
-	 * 
-	 */
-	static class LessCompilerCreator {
-
-		/**
-		 * creates an instance of LessCompiler
-		 * 
-		 * @param compress
-		 * @param encoding
-		 * @return
-		 */
-		public LessCompiler createCompiler(boolean compress, String encoding) {
-			LessCompiler compiler = new LessCompiler();
-			compiler.setCompress(compress);
-			if (encoding != null) {
-				compiler.setEncoding(encoding);
-			}
-
-			return compiler;
-		}
-
 	}
 
 }
